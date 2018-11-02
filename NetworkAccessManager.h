@@ -16,6 +16,8 @@ class NetworkAccessManager : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(QStringList supportedSchemes READ supportedSchemes)
+
 public:
     NetworkAccessManager(QObject* parent = nullptr);
     NetworkAccessManager(QQmlEngine *engine, QJSEngine *scriptEngine, QObject* parent = nullptr);
@@ -43,6 +45,8 @@ protected:
     void disconnectSignals();
 
     QNetworkAccessManager* manager();
+    QStringList supportedSchemes();
+
     static QObject *singletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
 
 };

@@ -120,3 +120,8 @@ QObject *NetworkAccessManager::singletonProvider(QQmlEngine *engine, QJSEngine *
 {
     return new NetworkAccessManager(engine, scriptEngine);
 }
+
+QStringList NetworkAccessManager::supportedSchemes()
+{
+    return manager()->supportedSchemes();
+}
