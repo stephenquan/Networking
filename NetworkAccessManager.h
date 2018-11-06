@@ -34,8 +34,14 @@ public:
     static void registerTypes(const char *uri, int versionMajor = 1, int versionMinor = 0);
 
 protected slots:
+    void onProxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator);
+    void onAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
     void onFinished(QNetworkReply*);
+    void onEncrypted(QNetworkReply *reply);
     void onSslErrors(QNetworkReply* reply, const QList<QSslError>& errors);
+    void onPreSharedKeyAuthenticationRequired(QNetworkReply *reply, QSslPreSharedKeyAuthenticator *authenticator);
+    void onNetworkSessionConnected();
+    void onNetworkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility accessible);
 
 protected:
     QNetworkAccessManager* m_manager;

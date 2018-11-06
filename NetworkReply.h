@@ -98,6 +98,45 @@ public:
 
     Q_ENUM(StatusCode)
 
+    enum NetworkError
+    {
+        NetworkErrorNoError                           = QNetworkReply::NoError,
+        NetworkErrorConnectionRefusedError            = QNetworkReply::ConnectionRefusedError,
+        NetworkErrorRemoteHostClosedError             = QNetworkReply::RemoteHostClosedError,
+        NetworkErrorHostNotFoundError                 = QNetworkReply::HostNotFoundError,
+        NetworkErrorTimeoutError                      = QNetworkReply::TimeoutError,
+        NetworkErrorOperationCanceledError            = QNetworkReply::OperationCanceledError,
+        NetworkErrorSslHandshakeFailedError           = QNetworkReply::SslHandshakeFailedError,
+        NetworkErrorTemporaryNetworkFailureError      = QNetworkReply::TemporaryNetworkFailureError,
+        NetworkErrorNetworkSessionFailedError         = QNetworkReply::NetworkSessionFailedError,
+        NetworkErrorBackgroundRequestNotAllowedError  = QNetworkReply::BackgroundRequestNotAllowedError,
+        NetworkErrorTooManyRedirectsError             = QNetworkReply::TooManyRedirectsError,
+        NetworkErrorInsecureRedirectError             = QNetworkReply::InsecureRedirectError,
+        NetworkErrorUnknownNetworkError               = QNetworkReply::UnknownNetworkError,
+        NetworkErrorProxyConnectionRefusedError       = QNetworkReply::ProxyConnectionRefusedError,
+        NetworkErrorProxyConnectionClosedError        = QNetworkReply::ProxyConnectionClosedError,
+        NetworkErrorProxyNotFoundError                = QNetworkReply::ProxyNotFoundError,
+        NetworkErrorProxyTimeoutError                 = QNetworkReply::ProxyTimeoutError,
+        NetworkErrorProxyAuthenticationRequiredError  = QNetworkReply::ProxyAuthenticationRequiredError,
+        NetworkErrorUnknownProxyError                 = QNetworkReply::UnknownProxyError,
+        NetworkErrorContentAccessDenied               = QNetworkReply::ContentAccessDenied,
+        NetworkErrorContentOperationNotPermittedError = QNetworkReply::ContentOperationNotPermittedError,
+        NetworkErrorContentNotFoundError              = QNetworkReply::ContentNotFoundError,
+        NetworkErrorAuthenticationRequiredError       = QNetworkReply::AuthenticationRequiredError,
+        NetworkErrorContentReSendError                = QNetworkReply::ContentReSendError,
+        NetworkErrorContentConflictError              = QNetworkReply::ContentConflictError,
+        NetworkErrorContentGoneError                  = QNetworkReply::ContentGoneError,
+        NetworkErrorUnknownContentError               = QNetworkReply::UnknownContentError,
+        NetworkErrorProtocolUnknownError              = QNetworkReply::ProtocolUnknownError,
+        NetworkErrorProtocolInvalidOperationError     = QNetworkReply::ProtocolInvalidOperationError,
+        NetworkErrorProtocolFailure                   = QNetworkReply::ProtocolFailure,
+        NetworkErrorInternalServerError               = QNetworkReply::InternalServerError,
+        NetworkErrorOperationNotImplementedError      = QNetworkReply::OperationNotImplementedError,
+        NetworkErrorServiceUnavailableError           = QNetworkReply::ServiceUnavailableError,
+        NetworkErrorUnknownServerError                = QNetworkReply::UnknownServerError
+    };
+
+    Q_ENUM(NetworkError)
 
 public:
     NetworkReply(QObject* parent = nullptr);
@@ -109,7 +148,7 @@ public:
 
 public:
     QUrl url() const { return m_reply ? m_reply->url() : QUrl(); }
-    int error() const { return m_reply ? m_reply->error() : 0; }
+    NetworkError error() const { return m_reply ? static_cast<NetworkError>(m_reply->error()) : NetworkErrorNoError; }
     QString errorString() const { return m_reply ? m_reply->errorString() : QString(); }
 
     void setReply(QNetworkReply* reply);

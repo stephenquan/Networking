@@ -22,7 +22,6 @@ NetworkReply::~NetworkReply()
     qDebug() << Q_FUNC_INFO;
 }
 
-
 NetworkReply* NetworkReply::create(QNetworkReply* reply, QQmlEngine::ObjectOwnership ownership)
 {
     NetworkReply* qmlReply = new NetworkReply(reply);

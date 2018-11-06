@@ -2,6 +2,8 @@
 #include "NetworkReply.h"
 #include <QQmlEngine>
 #include <QNetworkRequest>
+#include <QNetworkProxy>
+#include <QAuthenticator>
 #include <QDebug>
 
 NetworkAccessManager::NetworkAccessManager(QObject* parent) :
@@ -72,19 +74,37 @@ void NetworkAccessManager::clearConnectionCache()
 void NetworkAccessManager::connectSignals()
 {
     qDebug() << Q_FUNC_INFO;
-    //connect(m_manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onFinished(QNetworkReply*)));
-    //Qconnect(m_manager, SIGNAL(sslErrors(QNetworkReply*, const QList<QSslErrors>&)), this, SLOT(onSslErrors(QNetworkReply*, const QList<QSslErrors>&)));
+    connect(m_manager, &QNetworkAccessManager::proxyAuthenticationRequired, this, &NetworkAccessManager::onProxyAuthenticationRequired);
+    connect(m_manager, &QNetworkAccessManager::authenticationRequired, this, &NetworkAccessManager::onAuthenticationRequired);
     connect(m_manager, &QNetworkAccessManager::finished, this, &NetworkAccessManager::onFinished);
+    connect(m_manager, &QNetworkAccessManager::encrypted, this, &NetworkAccessManager::onEncrypted);
     connect(m_manager, &QNetworkAccessManager::sslErrors, this, &NetworkAccessManager::onSslErrors);
+    connect(m_manager, &QNetworkAccessManager::preSharedKeyAuthenticationRequired, this, &NetworkAccessManager::onPreSharedKeyAuthenticationRequired);
+    connect(m_manager, &QNetworkAccessManager::networkSessionConnected, this, &NetworkAccessManager::onNetworkSessionConnected);
+    connect(m_manager, &QNetworkAccessManager::networkAccessibleChanged, this, &NetworkAccessManager::onNetworkAccessibleChanged);
 }
 
 void NetworkAccessManager::disconnectSignals()
 {
     qDebug() << Q_FUNC_INFO;
-    //disconnect(m_manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onFinished(QNetworkReply*)));
-    // disconnect(m_manager, SIGNAL(sslErrors(QNetworkReply*, const QList<QSslErrors>&)), this, SLOT(onSslErrors(QNetworkReply*, const QList<QSslErrors>&)));
+    disconnect(m_manager, &QNetworkAccessManager::proxyAuthenticationRequired, this, &NetworkAccessManager::onProxyAuthenticationRequired);
+    disconnect(m_manager, &QNetworkAccessManager::authenticationRequired, this, &NetworkAccessManager::onAuthenticationRequired);
     disconnect(m_manager, &QNetworkAccessManager::finished, this, &NetworkAccessManager::onFinished);
+    disconnect(m_manager, &QNetworkAccessManager::encrypted, this, &NetworkAccessManager::onEncrypted);
     disconnect(m_manager, &QNetworkAccessManager::sslErrors, this, &NetworkAccessManager::onSslErrors);
+    disconnect(m_manager, &QNetworkAccessManager::preSharedKeyAuthenticationRequired, this, &NetworkAccessManager::onPreSharedKeyAuthenticationRequired);
+    disconnect(m_manager, &QNetworkAccessManager::networkSessionConnected, this, &NetworkAccessManager::onNetworkSessionConnected);
+    disconnect(m_manager, &QNetworkAccessManager::networkAccessibleChanged, this, &NetworkAccessManager::onNetworkAccessibleChanged);
+}
+
+void NetworkAccessManager::onProxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator)
+{
+    qDebug() << Q_FUNC_INFO << proxy.hostName() << authenticator;
+}
+
+void NetworkAccessManager::onAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
+{
+    qDebug() << Q_FUNC_INFO << reply << authenticator;
 }
 
 void NetworkAccessManager::onFinished(QNetworkReply* reply)
@@ -93,6 +113,11 @@ void NetworkAccessManager::onFinished(QNetworkReply* reply)
     NetworkReply* qmlReply = NetworkReply::create(reply);
     emit finished(qmlReply);
     reply->deleteLater();
+}
+
+void NetworkAccessManager::onEncrypted(QNetworkReply *reply)
+{
+    qDebug() << Q_FUNC_INFO << reply;
 }
 
 void NetworkAccessManager::onSslErrors(QNetworkReply* reply, const QList<QSslError>& errors)
@@ -108,6 +133,21 @@ void NetworkAccessManager::onSslErrors(QNetworkReply* reply, const QList<QSslErr
     }
     NetworkReply* qmlReply = NetworkReply::create(reply);
     emit sslErrors(qmlReply, qmlErrors);
+}
+
+void NetworkAccessManager::onPreSharedKeyAuthenticationRequired(QNetworkReply *reply, QSslPreSharedKeyAuthenticator *authenticator)
+{
+    qDebug() << Q_FUNC_INFO << reply << authenticator;
+}
+
+void NetworkAccessManager::onNetworkSessionConnected()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void NetworkAccessManager::onNetworkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility accessible)
+{
+    qDebug() << Q_FUNC_INFO << accessible;
 }
 
 void NetworkAccessManager::registerTypes(const char* uri, int versionMajor, int versionMinor)
