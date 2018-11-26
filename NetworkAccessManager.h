@@ -17,6 +17,17 @@ class NetworkAccessManager : public QObject
     Q_OBJECT
 
     Q_PROPERTY(QStringList supportedSchemes READ supportedSchemes)
+    Q_PROPERTY(NetworkAccessibility networkAccessible READ networkAccessible NOTIFY networkAccessibleChanged)
+
+public:
+    enum NetworkAccessibility
+    {
+        NetworkAccessibilityUnknown = QNetworkAccessManager::UnknownAccessibility,
+        NetworkAccessibilityFalse   = QNetworkAccessManager::NotAccessible,
+        NetworkAccessibilityTrue    = QNetworkAccessManager::Accessible
+    };
+
+    Q_ENUM(NetworkAccessibility)
 
 public:
     NetworkAccessManager(QObject* parent = nullptr);
@@ -29,6 +40,7 @@ public:
 signals:
     void finished(NetworkReply* reply);
     void sslErrors(NetworkReply* reply, const QVariantList& errors);
+    void networkAccessibleChanged(NetworkAccessibility accessible);
 
 public:
     static void registerTypes(const char *uri, int versionMajor = 1, int versionMinor = 0);
@@ -52,6 +64,7 @@ protected:
 
     QNetworkAccessManager* manager();
     QStringList supportedSchemes();
+    NetworkAccessibility networkAccessible();
 
     static QObject *singletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
 

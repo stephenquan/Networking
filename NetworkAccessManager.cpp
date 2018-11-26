@@ -148,6 +148,7 @@ void NetworkAccessManager::onNetworkSessionConnected()
 void NetworkAccessManager::onNetworkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility accessible)
 {
     qDebug() << Q_FUNC_INFO << accessible;
+    emit networkAccessibleChanged(static_cast<NetworkAccessibility>(accessible));
 }
 
 void NetworkAccessManager::registerTypes(const char* uri, int versionMajor, int versionMinor)
@@ -164,4 +165,11 @@ QObject *NetworkAccessManager::singletonProvider(QQmlEngine *engine, QJSEngine *
 QStringList NetworkAccessManager::supportedSchemes()
 {
     return manager()->supportedSchemes();
+}
+
+NetworkAccessManager::NetworkAccessibility NetworkAccessManager::networkAccessible()
+{
+    QNetworkAccessManager* _manager = manager();
+
+    return static_cast<NetworkAccessibility>(_manager->networkAccessible());
 }
