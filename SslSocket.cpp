@@ -1,7 +1,7 @@
 #include "SslSocket.h"
 #include <QSslSocket>
 
-const char* SslSocket::typeName = "SslSocket";
+const char* SslSocket::kTypeName = "SslSocket";
 
 SslSocket::SslSocket(QObject* parent) :
     QObject(parent),
@@ -52,8 +52,8 @@ void SslSocket::setSocket(QSslSocket* socket)
 
 void SslSocket::registerTypes(const char* uri, int versionMajor, int versionMinor)
 {
-    qmlRegisterSingletonType<SslSocket>(uri, versionMajor, versionMinor, typeName, singletonProvider);
-    qmlRegisterUncreatableType<SslSocket>(uri, versionMajor, versionMinor, typeName, QStringLiteral("Cannot create SslSocket"));
+    qmlRegisterSingletonType<SslSocket>(uri, versionMajor, versionMinor, kTypeName, singletonProvider);
+    qmlRegisterUncreatableType<SslSocket>(uri, versionMajor, versionMinor, kTypeName, QStringLiteral("Cannot create SslSocket"));
 }
 
 void SslSocket::connectSignals()

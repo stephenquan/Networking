@@ -6,6 +6,8 @@
 #include <QAuthenticator>
 #include <QDebug>
 
+const char* NetworkAccessManager::kTypeName = "NetworkAccessManager";
+
 NetworkAccessManager::NetworkAccessManager(QObject* parent) :
     QObject(parent),
     m_manager(nullptr),
@@ -153,8 +155,8 @@ void NetworkAccessManager::onNetworkAccessibleChanged(QNetworkAccessManager::Net
 
 void NetworkAccessManager::registerTypes(const char* uri, int versionMajor, int versionMinor)
 {
-    qmlRegisterSingletonType<NetworkAccessManager>(uri, versionMajor, versionMinor, "NetworkAccessManager", singletonProvider);
-    qmlRegisterType<NetworkAccessManager>(uri, versionMajor, versionMinor, "NetworkAccessManager");
+    qmlRegisterSingletonType<NetworkAccessManager>(uri, versionMajor, versionMinor, kTypeName, singletonProvider);
+    qmlRegisterType<NetworkAccessManager>(uri, versionMajor, versionMinor, kTypeName);
 }
 
 QObject *NetworkAccessManager::singletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)

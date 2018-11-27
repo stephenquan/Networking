@@ -147,6 +147,9 @@ public:
     Q_INVOKABLE QString readAll();
 
 public:
+    static const char* kTypeName;
+
+public:
     QUrl url() const { return m_reply ? m_reply->url() : QUrl(); }
     NetworkError error() const { return m_reply ? static_cast<NetworkError>(m_reply->error()) : NetworkErrorNoError; }
     QString errorString() const { return m_reply ? m_reply->errorString() : QString(); }

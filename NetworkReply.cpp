@@ -1,6 +1,8 @@
 #include "NetworkReply.h"
 #include <QNetworkReply>
 
+const char* NetworkReply::kTypeName = "NetworkReply";
+
 NetworkReply::NetworkReply(QObject* parent) :
     QObject(parent),
     m_reply(nullptr)
@@ -49,7 +51,7 @@ void NetworkReply::setReply(QNetworkReply* reply)
 
 void NetworkReply::registerTypes(const char* uri, int versionMajor, int versionMinor)
 {
-    qmlRegisterUncreatableType<NetworkReply>(uri, versionMajor, versionMinor, "NetworkReply", QStringLiteral("Cannot create NetworkReply"));
+    qmlRegisterUncreatableType<NetworkReply>(uri, versionMajor, versionMinor, kTypeName, QStringLiteral("Cannot create NetworkReply"));
 }
 
 void NetworkReply::connectSignals()

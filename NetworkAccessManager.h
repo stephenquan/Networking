@@ -37,6 +37,9 @@ public:
     Q_INVOKABLE void clearAccessCache();
     Q_INVOKABLE void clearConnectionCache();
 
+public:
+    static char const* kTypeName;
+
 signals:
     void finished(NetworkReply* reply);
     void sslErrors(NetworkReply* reply, const QVariantList& errors);

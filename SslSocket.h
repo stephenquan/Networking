@@ -45,7 +45,7 @@ public:
     Q_INVOKABLE bool addDefaultCaCertificates(const QString& path, EncodingFormat format = EncodingFormatPem, PatternSyntax patternSyntax = PatternSyntaxWildcard);
 
 public:
-    static const char* typeName;
+    static const char* kTypeName;
 
     void setSocket(QSslSocket* socket);
 
