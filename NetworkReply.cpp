@@ -16,7 +16,7 @@ NetworkReply::NetworkReply(QNetworkReply* reply, QObject* parent) :
 {
     qDebug() << Q_FUNC_INFO << reply;
 
-    setReply(reply);
+    assign(reply);
 }
 
 NetworkReply::~NetworkReply()
@@ -31,7 +31,7 @@ NetworkReply* NetworkReply::create(QNetworkReply* reply, QQmlEngine::ObjectOwner
     return qmlReply;
 }
 
-void NetworkReply::setReply(QNetworkReply* reply)
+void NetworkReply::assign(QNetworkReply* reply)
 {
     if (m_reply)
     {
@@ -49,19 +49,48 @@ void NetworkReply::setReply(QNetworkReply* reply)
     connectSignals();
 }
 
-void NetworkReply::registerTypes(const char* uri, int versionMajor, int versionMinor)
+void NetworkReply::assign(QObject* reply)
 {
-    qmlRegisterUncreatableType<NetworkReply>(uri, versionMajor, versionMinor, kTypeName, QStringLiteral("Cannot create NetworkReply"));
+    qDebug() << Q_FUNC_INFO << reply;
+
+    NetworkReply* _reply = dynamic_cast<NetworkReply*>(reply);
+    if (_reply)
+    {
+        assign(_reply);
+        return;
+    }
+}
+
+void NetworkReply::assign(NetworkReply* reply)
+{
+    qDebug() << Q_FUNC_INFO << reply;
+    assign(reply->m_reply);
 }
 
 void NetworkReply::connectSignals()
 {
-
+    connect(m_reply, &QNetworkReply::metaDataChanged, this, &NetworkReply::onMetaDataChanged);
+    connect(m_reply, &QNetworkReply::finished, this, &NetworkReply::onFinished);
+    connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onError(QNetworkReply::NetworkError)));
+    connect(m_reply, &QNetworkReply::sslErrors, this, &NetworkReply::onSslErrors);
+    connect(m_reply, &QNetworkReply::preSharedKeyAuthenticationRequired, this, &NetworkReply::onPreSharedKeyAuthenticationRequired);
+    connect(m_reply, &QNetworkReply::redirected, this, &NetworkReply::onRedirected);
+    connect(m_reply, &QNetworkReply::redirectAllowed, this, &NetworkReply::onRedirectAllowed);
+    connect(m_reply, &QNetworkReply::uploadProgress, this, &NetworkReply::onUploadProgress);
+    connect(m_reply, &QNetworkReply::downloadProgress, this, &NetworkReply::onDownloadProgress);
 }
 
 void NetworkReply::disconnectSignals()
 {
-
+    disconnect(m_reply, &QNetworkReply::metaDataChanged, this, &NetworkReply::onMetaDataChanged);
+    disconnect(m_reply, &QNetworkReply::finished, this, &NetworkReply::onFinished);
+    disconnect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onError(QNetworkReply::NetworkError)));
+    disconnect(m_reply, &QNetworkReply::sslErrors, this, &NetworkReply::onSslErrors);
+    disconnect(m_reply, &QNetworkReply::preSharedKeyAuthenticationRequired, this, &NetworkReply::onPreSharedKeyAuthenticationRequired);
+    disconnect(m_reply, &QNetworkReply::redirected, this, &NetworkReply::onRedirected);
+    disconnect(m_reply, &QNetworkReply::redirectAllowed, this, &NetworkReply::onRedirectAllowed);
+    disconnect(m_reply, &QNetworkReply::uploadProgress, this, &NetworkReply::onUploadProgress);
+    disconnect(m_reply, &QNetworkReply::downloadProgress, this, &NetworkReply::onDownloadProgress);
 }
 
 QVariant NetworkReply::attribute(Attribute code) const
@@ -85,4 +114,56 @@ QString NetworkReply::readAll()
     QString response = QString::fromUtf8(bytes);
     qDebug() << Q_FUNC_INFO << response;
     return response;
+}
+
+void NetworkReply::onMetaDataChanged()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void NetworkReply::onFinished()
+{
+    qDebug() << Q_FUNC_INFO;
+
+    emit finished();
+}
+
+void NetworkReply::onError(QNetworkReply::NetworkError error)
+{
+    qDebug() << Q_FUNC_INFO << error;
+}
+
+void NetworkReply::onEncrypted()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void NetworkReply::onSslErrors(const QList<QSslError> &errors)
+{
+    qDebug() << Q_FUNC_INFO << errors;
+}
+
+void NetworkReply::onPreSharedKeyAuthenticationRequired(QSslPreSharedKeyAuthenticator *authenticator)
+{
+    qDebug() << Q_FUNC_INFO << authenticator;
+}
+
+void NetworkReply::onRedirected(const QUrl &url)
+{
+    qDebug() << Q_FUNC_INFO << url;
+}
+
+void NetworkReply::onRedirectAllowed()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void NetworkReply::onUploadProgress(qint64 bytesSent, qint64 bytesTotal)
+{
+    qDebug() << Q_FUNC_INFO << bytesSent << bytesTotal;
+}
+
+void NetworkReply::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
+{
+    qDebug() << Q_FUNC_INFO << bytesReceived << bytesTotal;
 }

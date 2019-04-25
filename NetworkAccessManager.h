@@ -46,7 +46,7 @@ signals:
     void networkAccessibleChanged(NetworkAccessibility accessible);
 
 public:
-    static void registerTypes(const char *uri, int versionMajor = 1, int versionMinor = 0);
+    static QObject *singletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
 
 protected slots:
     void onProxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator);
@@ -68,8 +68,6 @@ protected:
     QNetworkAccessManager* manager();
     QStringList supportedSchemes();
     NetworkAccessibility networkAccessible();
-
-    static QObject *singletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
 
 };
 

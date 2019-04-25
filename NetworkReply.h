@@ -145,6 +145,10 @@ public:
 
     Q_INVOKABLE QVariant attribute(Attribute code) const;
     Q_INVOKABLE QString readAll();
+    Q_INVOKABLE void assign(QObject* reply);
+
+signals:
+    void finished();
 
 public:
     static const char* kTypeName;
@@ -154,16 +158,28 @@ public:
     NetworkError error() const { return m_reply ? static_cast<NetworkError>(m_reply->error()) : NetworkErrorNoError; }
     QString errorString() const { return m_reply ? m_reply->errorString() : QString(); }
 
-    void setReply(QNetworkReply* reply);
+    void assign(QNetworkReply* reply);
+    void assign(NetworkReply* reply);
 
     static NetworkReply* create(QNetworkReply*, QQmlEngine::ObjectOwnership ownership = QQmlEngine::JavaScriptOwnership);
-    static void registerTypes(const char* uri, int versionMajor = 1, int versionMinor = 0);
 
 protected:
     QNetworkReply* m_reply;
 
     void connectSignals();
     void disconnectSignals();
+
+protected slots:
+    void onMetaDataChanged();
+    void onFinished();
+    void onError(QNetworkReply::NetworkError error);
+    void onEncrypted();
+    void onSslErrors(const QList<QSslError> &errors);
+    void onPreSharedKeyAuthenticationRequired(QSslPreSharedKeyAuthenticator *authenticator);
+    void onRedirected(const QUrl &url);
+    void onRedirectAllowed();
+    void onUploadProgress(qint64 bytesSent, qint64 bytesTotal);
+    void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
 
 };
 

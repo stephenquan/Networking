@@ -153,12 +153,6 @@ void NetworkAccessManager::onNetworkAccessibleChanged(QNetworkAccessManager::Net
     emit networkAccessibleChanged(static_cast<NetworkAccessibility>(accessible));
 }
 
-void NetworkAccessManager::registerTypes(const char* uri, int versionMajor, int versionMinor)
-{
-    qmlRegisterSingletonType<NetworkAccessManager>(uri, versionMajor, versionMinor, kTypeName, singletonProvider);
-    qmlRegisterType<NetworkAccessManager>(uri, versionMajor, versionMinor, kTypeName);
-}
-
 QObject *NetworkAccessManager::singletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     return new NetworkAccessManager(engine, scriptEngine);

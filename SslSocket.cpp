@@ -50,12 +50,6 @@ void SslSocket::setSocket(QSslSocket* socket)
     connectSignals();
 }
 
-void SslSocket::registerTypes(const char* uri, int versionMajor, int versionMinor)
-{
-    qmlRegisterSingletonType<SslSocket>(uri, versionMajor, versionMinor, kTypeName, singletonProvider);
-    qmlRegisterUncreatableType<SslSocket>(uri, versionMajor, versionMinor, kTypeName, QStringLiteral("Cannot create SslSocket"));
-}
-
 void SslSocket::connectSignals()
 {
 

@@ -50,15 +50,13 @@ public:
     void setSocket(QSslSocket* socket);
 
     static SslSocket* create(QSslSocket*, QQmlEngine::ObjectOwnership ownership = QQmlEngine::JavaScriptOwnership);
-    static void registerTypes(const char* uri, int versionMajor = 1, int versionMinor = 0);
+    static QObject *singletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
 
 protected:
     QSslSocket* m_socket;
 
     void connectSignals();
     void disconnectSignals();
-
-    static QObject *singletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
 
     static bool supportsSsl() { return QSslSocket::supportsSsl(); }
     static long sslLibraryBuildVersionNumber() { return QSslSocket::sslLibraryBuildVersionNumber(); }

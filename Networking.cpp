@@ -4,6 +4,8 @@
 #include "SslSocket.h"
 #include <QCoreApplication>
 
+#define URI "com.stephenquan.networking"
+
 const char* Networking::kTypeName = "Networking";
 const char* Networking::kPropertyNetworking = "networking";
 const char* Networking::kPropertyNetworkAccessManagers = "networkAccessManagers";
@@ -15,12 +17,15 @@ Networking::Networking(QObject* parent) :
     QCoreApplication::instance()->setProperty(kPropertyNetworking, QVariant::fromValue<QObject*>(dynamic_cast<QObject*>(this)));
 }
 
-void Networking::registerTypes(const char* uri, int versionMajor, int versionMinor)
+void Networking::registerTypes()
 {
-    qmlRegisterSingletonType<Networking>(uri, versionMajor, versionMinor, kTypeName, singletonProvider);
-    NetworkAccessManager::registerTypes(uri, versionMajor, versionMinor);
-    NetworkReply::registerTypes(uri, versionMajor, versionMinor);
-    SslSocket::registerTypes(uri, versionMajor, versionMinor);
+    qmlRegisterSingletonType<Networking>(URI, 1, 0, "Networking", Networking::singletonProvider);
+    qmlRegisterSingletonType<NetworkAccessManager>(URI, 1, 0, "NetworkAccessManager", NetworkAccessManager::singletonProvider);
+    qmlRegisterType<NetworkAccessManager>(URI, 1, 0, "NetworkAccessManager");
+    //qmlRegisterUncreatableType<NetworkReply>(URI, 1, 0, "NetworkReply", QStringLiteral("Cannot create NetworkReply"));
+    qmlRegisterType<NetworkReply>(URI, 1, 0, "NetworkReply");
+    qmlRegisterSingletonType<SslSocket>(URI, 1, 0, "SslSocket", SslSocket::singletonProvider);
+    qmlRegisterUncreatableType<SslSocket>(URI, 1, 0, "SslSocket", QStringLiteral("Cannot create SslSocket"));
 }
 
 QObject *Networking::singletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)

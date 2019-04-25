@@ -23,8 +23,7 @@ class Networking : public QObject
 public:
     Networking(QObject* parent = nullptr);
 
-    static void registerTypes(const char* uri, int versionMajor = 1, int versionMinor = 0);
-
+    static void registerTypes();
     static QObject *singletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
 
     Q_INVOKABLE void clearAccessCache();
