@@ -36,8 +36,8 @@ public:
     Q_INVOKABLE void get(const QUrl& url, NetworkReply* reply);
     Q_INVOKABLE void head(const QUrl& url, NetworkReply* reply);
     Q_INVOKABLE void deleteResource(const QUrl& url, NetworkReply* reply);
-    Q_INVOKABLE void post(const QUrl& url, NetworkReply* reply, const QVariant& data);
-    Q_INVOKABLE void put(const QUrl& url, NetworkReply* reply, const QVariant& data);
+    Q_INVOKABLE void post(const QUrl& url, NetworkReply* reply, const QVariant& data = QVariant());
+    Q_INVOKABLE void put(const QUrl& url, NetworkReply* reply, const QVariant& data = QVariant());
     Q_INVOKABLE void clearAccessCache();
     Q_INVOKABLE void clearConnectionCache();
 
