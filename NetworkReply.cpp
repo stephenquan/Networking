@@ -132,18 +132,21 @@ QString NetworkReply::readAll()
 void NetworkReply::onMetaDataChanged()
 {
     qDebug() << Q_FUNC_INFO;
+    emit rawHeadersChanged();
 }
 
 void NetworkReply::onFinished()
 {
     qDebug() << Q_FUNC_INFO;
 
+    emit rawHeadersChanged();
     emit finished();
 }
 
 void NetworkReply::onError(QNetworkReply::NetworkError error)
 {
     qDebug() << Q_FUNC_INFO << error;
+    emit rawHeadersChanged();
 }
 
 void NetworkReply::onEncrypted()
@@ -164,6 +167,7 @@ void NetworkReply::onPreSharedKeyAuthenticationRequired(QSslPreSharedKeyAuthenti
 void NetworkReply::onRedirected(const QUrl &url)
 {
     qDebug() << Q_FUNC_INFO << url;
+    emit rawHeadersChanged();
 }
 
 void NetworkReply::onRedirectAllowed()
@@ -179,4 +183,19 @@ void NetworkReply::onUploadProgress(qint64 bytesSent, qint64 bytesTotal)
 void NetworkReply::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 {
     qDebug() << Q_FUNC_INFO << bytesReceived << bytesTotal;
+}
+
+QVariantMap NetworkReply::rawHeaders()
+{
+    qDebug() << Q_FUNC_INFO;
+
+    QVariantMap map;
+    if (!m_reply) return map;
+
+    foreach (auto key, m_reply->rawHeaderList())
+    {
+        map[QString::fromUtf8(key)] = QString::fromUtf8(m_reply->rawHeader(key));
+    }
+
+    return map;
 }

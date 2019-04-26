@@ -13,6 +13,7 @@ class NetworkReply: public QObject
     Q_PROPERTY(QUrl url READ url)
     Q_PROPERTY(int error READ error)
     Q_PROPERTY(QString errorString READ errorString)
+    Q_PROPERTY(QVariantMap rawHeaders READ rawHeaders NOTIFY rawHeadersChanged)
 
 public:
     enum Attribute
@@ -151,6 +152,8 @@ public:
 signals:
     void finished();
 
+    void rawHeadersChanged();
+
 public:
     static const char* kTypeName;
 
@@ -161,6 +164,7 @@ public:
 
     void assign(QNetworkReply* reply);
     void assign(NetworkReply* reply);
+    QVariantMap rawHeaders();
 
     static NetworkReply* create(QNetworkReply*, QQmlEngine::ObjectOwnership ownership = QQmlEngine::JavaScriptOwnership);
 
