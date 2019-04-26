@@ -33,7 +33,11 @@ public:
     NetworkAccessManager(QObject* parent = nullptr);
     NetworkAccessManager(QQmlEngine *engine, QJSEngine *scriptEngine, QObject* parent = nullptr);
 
-    Q_INVOKABLE NetworkReply* get(const QUrl& url);
+    Q_INVOKABLE void get(const QUrl& url, NetworkReply* reply);
+    Q_INVOKABLE void head(const QUrl& url, NetworkReply* reply);
+    Q_INVOKABLE void deleteResource(const QUrl& url, NetworkReply* reply);
+    Q_INVOKABLE void post(const QUrl& url, NetworkReply* reply, const QVariant& data);
+    Q_INVOKABLE void put(const QUrl& url, NetworkReply* reply, const QVariant& data);
     Q_INVOKABLE void clearAccessCache();
     Q_INVOKABLE void clearConnectionCache();
 
@@ -47,6 +51,11 @@ signals:
 
 public:
     static QObject *singletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
+    static bool validateArg(const QUrl& url);
+    static bool validateArg(NetworkReply* reply);
+    static void setNetworkReply(NetworkReply* reply, QNetworkReply* _reply);
+    void post(const QUrl& url, NetworkReply* reply, const QByteArray& data);
+    void put(const QUrl& url, NetworkReply* reply, const QByteArray& data);
 
 protected slots:
     void onProxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator);

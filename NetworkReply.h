@@ -143,6 +143,7 @@ public:
     NetworkReply(QNetworkReply* reply, QObject* parent = nullptr);
     virtual ~NetworkReply();
 
+    Q_INVOKABLE void clear();
     Q_INVOKABLE QVariant attribute(Attribute code) const;
     Q_INVOKABLE QString readAll();
     Q_INVOKABLE void assign(QObject* reply);

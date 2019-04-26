@@ -36,6 +36,7 @@ void NetworkReply::assign(QNetworkReply* reply)
     if (m_reply)
     {
         disconnectSignals();
+        m_reply->deleteLater();
         m_reply = nullptr;
     }
 
@@ -65,6 +66,18 @@ void NetworkReply::assign(NetworkReply* reply)
 {
     qDebug() << Q_FUNC_INFO << reply;
     assign(reply->m_reply);
+}
+
+void NetworkReply::clear()
+{
+    if (!m_reply)
+    {
+        return;
+    }
+
+    disconnectSignals();
+    m_reply->deleteLater();
+    m_reply = nullptr;
 }
 
 void NetworkReply::connectSignals()

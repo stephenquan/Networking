@@ -44,13 +44,114 @@ QNetworkAccessManager* NetworkAccessManager::manager()
     return m_manager;
 }
 
-NetworkReply* NetworkAccessManager::get(const QUrl& url)
+void NetworkAccessManager::get(const QUrl& url, NetworkReply* reply)
 {
-    qDebug() << Q_FUNC_INFO;
+    qDebug() << Q_FUNC_INFO << url;
+
+    if (!validateArg(url)) return;
+    if (!validateArg(reply)) return;
+
     QNetworkRequest req(url);
-    QNetworkReply* reply = manager()->get(req);
-    NetworkReply* qmlReply = NetworkReply::create(reply);
-    return qmlReply;
+    QNetworkReply* _reply = manager()->get(req);
+    setNetworkReply(reply, _reply);
+}
+
+void NetworkAccessManager::head(const QUrl& url, NetworkReply* reply)
+{
+    qDebug() << Q_FUNC_INFO << url;
+
+    if (!validateArg(url)) return;
+    if (!validateArg(reply)) return;
+
+    QNetworkRequest req(url);
+    QNetworkReply* _reply = manager()->head(req);
+    setNetworkReply(reply, _reply);
+}
+
+void NetworkAccessManager::deleteResource(const QUrl& url, NetworkReply* reply)
+{
+    qDebug() << Q_FUNC_INFO << url;
+
+    if (!validateArg(url)) return;
+    if (!validateArg(reply)) return;
+
+    QNetworkRequest req(url);
+    QNetworkReply* _reply = manager()->deleteResource(req);
+    setNetworkReply(reply, _reply);
+}
+
+void NetworkAccessManager::post(const QUrl& url, NetworkReply* reply, const QVariant& data)
+{
+    qDebug() << Q_FUNC_INFO << url << data;
+
+    if (data.isNull())
+    {
+        post(url, reply, QByteArray());
+        return;
+    }
+
+    if (data.type() == QVariant::String)
+    {
+        post(url, reply, data.toString().toUtf8());
+        return;
+    }
+
+    if (data.canConvert<QByteArray>())
+    {
+        post(url, reply, data.toByteArray());
+        return;
+    }
+
+    qWarning(" not supported (yet)");
+}
+
+void NetworkAccessManager::post(const QUrl& url, NetworkReply* reply, const QByteArray& data)
+{
+    qDebug() << Q_FUNC_INFO << url << data;
+
+    if (!validateArg(url)) return;
+    if (!validateArg(reply)) return;
+
+    QNetworkRequest req(url);
+    QNetworkReply* _reply = manager()->post(req, data);
+    setNetworkReply(reply, _reply);
+}
+
+void NetworkAccessManager::put(const QUrl& url, NetworkReply* reply, const QVariant& data)
+{
+    qDebug() << Q_FUNC_INFO << url << data;
+
+    if (data.isNull())
+    {
+        put(url, reply, QByteArray());
+        return;
+    }
+
+    if (data.type() == QVariant::String)
+    {
+        put(url, reply, data.toString().toUtf8());
+        return;
+    }
+
+    if (data.canConvert<QByteArray>())
+    {
+        put(url, reply, data.toByteArray());
+        return;
+    }
+
+    qWarning(" not supported (yet)");
+}
+
+void NetworkAccessManager::put(const QUrl& url, NetworkReply* reply, const QByteArray& data)
+{
+    qDebug() << Q_FUNC_INFO << url << data;
+
+    if (!validateArg(url)) return;
+    if (!validateArg(reply)) return;
+
+    QNetworkRequest req(url);
+    QNetworkReply* _reply = manager()->put(req, data);
+    setNetworkReply(reply, _reply);
 }
 
 void NetworkAccessManager::clearAccessCache()
@@ -168,4 +269,30 @@ NetworkAccessManager::NetworkAccessibility NetworkAccessManager::networkAccessib
     QNetworkAccessManager* _manager = manager();
 
     return static_cast<NetworkAccessibility>(_manager->networkAccessible());
+}
+
+bool NetworkAccessManager::validateArg(const QUrl& url)
+{
+    if (!url.isEmpty() && url.isValid()) return true;
+    qCritical("invalid url argument");
+    return false;
+}
+
+
+bool NetworkAccessManager::validateArg(NetworkReply* reply)
+{
+    if (reply) return true;
+    qCritical("invalid NetworkReply argument");
+    return false;
+}
+
+void NetworkAccessManager::setNetworkReply(NetworkReply* reply, QNetworkReply* _reply)
+{
+    if (!_reply)
+    {
+        qCritical("unexpected empty QNetworkReply");
+        return;
+    }
+
+    reply->assign(_reply);
 }
