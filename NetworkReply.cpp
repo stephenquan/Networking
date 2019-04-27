@@ -132,6 +132,9 @@ QString NetworkReply::readAll()
 void NetworkReply::onMetaDataChanged()
 {
     qDebug() << Q_FUNC_INFO;
+
+    emit errorChanged();
+    emit errorStringChanged();
     emit rawHeadersChanged();
 }
 
@@ -139,13 +142,19 @@ void NetworkReply::onFinished()
 {
     qDebug() << Q_FUNC_INFO;
 
+    emit errorChanged();
+    emit errorStringChanged();
     emit rawHeadersChanged();
+
     emit finished();
 }
 
 void NetworkReply::onError(QNetworkReply::NetworkError error)
 {
     qDebug() << Q_FUNC_INFO << error;
+
+    emit errorChanged();
+    emit errorStringChanged();
     emit rawHeadersChanged();
 }
 
@@ -167,7 +176,6 @@ void NetworkReply::onPreSharedKeyAuthenticationRequired(QSslPreSharedKeyAuthenti
 void NetworkReply::onRedirected(const QUrl &url)
 {
     qDebug() << Q_FUNC_INFO << url;
-    emit rawHeadersChanged();
 }
 
 void NetworkReply::onRedirectAllowed()

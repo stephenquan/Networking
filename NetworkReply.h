@@ -11,8 +11,8 @@ class NetworkReply: public QObject
     Q_OBJECT
 
     Q_PROPERTY(QUrl url READ url)
-    Q_PROPERTY(int error READ error)
-    Q_PROPERTY(QString errorString READ errorString)
+    Q_PROPERTY(NetworkError error READ error NOTIFY errorChanged)
+    Q_PROPERTY(QString errorString READ errorString NOTIFY errorStringChanged)
     Q_PROPERTY(QVariantMap rawHeaders READ rawHeaders NOTIFY rawHeadersChanged)
 
 public:
@@ -152,6 +152,8 @@ public:
 signals:
     void finished();
 
+    void errorChanged();
+    void errorStringChanged();
     void rawHeadersChanged();
 
 public:
